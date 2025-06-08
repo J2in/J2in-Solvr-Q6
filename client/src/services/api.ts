@@ -2,7 +2,7 @@ import axios from 'axios'
 import { User, CreateUserDto, UpdateUserDto } from '../types/user'
 
 // API 응답 타입
-interface ApiResponse<T = any> {
+export interface ApiResponse<T = any> {
   success: boolean
   data?: T
   error?: string

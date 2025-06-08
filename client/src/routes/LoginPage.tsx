@@ -2,16 +2,9 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
-import api from '../services/api' // 2번에서 만들 인터셉터
+import api, { ApiResponse } from '../services/api'
 import Button from '../components/ui/Button'
 import Input from '../components/ui/Input'
-
-interface ApiResponse<T = any> {
-  success: boolean
-  data: { token: string }
-  error?: string
-  message?: string
-}
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -27,6 +20,9 @@ export default function LoginPage() {
     try {
       // ApiResponse<{ token: string }> 으로 받는다
       const res = await api.post<ApiResponse<{ token: string }>>('/session/login', { email })
+      if (!res.data.data) {
+        throw new Error('로그인 응답에 토큰이 없습니다.')
+      }
       const token = res.data.data.token
       localStorage.setItem('token', token)
       await refreshUser()

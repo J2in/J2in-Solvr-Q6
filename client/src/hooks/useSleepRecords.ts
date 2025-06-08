@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import axios from 'axios'
+import { ApiResponse } from '@/services/api'
 
 export interface SleepRecord {
   id: number
@@ -13,11 +14,6 @@ export interface SleepRecord {
   updatedAt: string
 }
 
-interface ApiResponse<T> {
-  success: boolean
-  data: T
-}
-
 export const useSleepRecords = (userId?: number) => {
   const [data, setData] = useState<SleepRecord[]>([])
   const [loading, setLoading] = useState(false)
@@ -28,7 +24,7 @@ export const useSleepRecords = (userId?: number) => {
     try {
       const url = userId ? `/api/sleep-records/user/${userId}` : `/api/sleep-records`
       const res = await axios.get<ApiResponse<SleepRecord[]>>(url)
-      setData(res.data.data)
+      setData(res.data.data ?? [])
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -51,13 +47,17 @@ export const useSleepRecords = (userId?: number) => {
 
   const createRecord = useCallback(async (body: Partial<SleepRecord>) => {
     const res = await axios.post<ApiResponse<SleepRecord>>('/api/sleep-records', body)
-    setData(prev => [...prev, res.data.data])
+    const rec = res.data.data
+    if (rec) setData(prev => [...prev, rec])
     return res.data.data
   }, [])
 
   const updateRecord = useCallback(async (id: number, body: Partial<SleepRecord>) => {
     const res = await axios.put<ApiResponse<SleepRecord>>(`/api/sleep-records/${id}`, body)
-    setData(prev => prev.map(r => (r.id === id ? res.data.data : r)))
+    const rec = res.data.data
+    if (rec) {
+      setData(prev => prev.map(r => (r.id === id ? rec : r)))
+    }
     return res.data.data
   }, [])
 

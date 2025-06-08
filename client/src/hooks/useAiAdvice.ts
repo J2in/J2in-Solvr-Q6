@@ -1,13 +1,6 @@
 import { useState, useEffect } from 'react'
-import api from '../services/api'
+import api, { ApiResponse } from '../services/api'
 import { useAuth } from './useAuth'
-
-interface ApiResponse<T = any> {
-  success: boolean
-  data?: T
-  error?: string
-  message?: string
-}
 
 export const useAiAdvice = (periodDays = 30) => {
   const { userId } = useAuth()
