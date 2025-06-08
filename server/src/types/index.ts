@@ -65,7 +65,15 @@ export interface CreateSleepRecordDto
 // 수면 기록 수정 DTO
 export interface UpdateSleepRecordDto extends UpdateSleepRecord {}
 
+// 로그인 DTO
+export interface LoginDto {
+  email: string
+}
+
 // 세션 생성 DTO
-export interface CreateSessionDto extends Omit<NewSession, 'id' | 'createdAt'> {
+// types/session.ts
+export interface CreateSessionDto {
+  userId: number
+  token: string
   expiresAt: string
 }
