@@ -36,6 +36,19 @@ export const useSleepRecords = (userId?: number) => {
     }
   }, [userId])
 
+  const getById = useCallback(async (id: number): Promise<SleepRecord | undefined> => {
+    setLoading(true)
+    try {
+      const res = await axios.get<ApiResponse<SleepRecord>>(`/api/sleep-records/${id}`)
+      return res.data.data
+    } catch (err: any) {
+      setError(err.message)
+      return undefined
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
   const createRecord = useCallback(async (body: Partial<SleepRecord>) => {
     const res = await axios.post<ApiResponse<SleepRecord>>('/api/sleep-records', body)
     setData(prev => [...prev, res.data.data])
@@ -62,6 +75,7 @@ export const useSleepRecords = (userId?: number) => {
     loading,
     error,
     createRecord,
+    getById,
     updateRecord,
     deleteRecord,
     fetchAll,

@@ -6,12 +6,13 @@ import { useSleepRecords } from '../hooks/useSleepRecords'
 export default function EditSleepRecordPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { data: records, updateRecord, fetchAll } = useSleepRecords()
+  const { getById, updateRecord } = useSleepRecords()
   const [initial, setInitial] = useState<SleepRecordFormValues | null>(null)
 
+  // 컴포넌트 마운트 시 단일 레코드만 불러오기
   useEffect(() => {
-    fetchAll().then(() => {
-      const rec = records.find(r => r.id === +id!)
+    if (!id) return
+    getById(+id).then(rec => {
       if (rec) {
         setInitial({
           startTime: rec.startTime.slice(0, 16),
@@ -19,9 +20,12 @@ export default function EditSleepRecordPage() {
           quality: rec.quality,
           notes: rec.notes || ''
         })
+      } else {
+        // 없는 ID면 리스트로 리다이렉트
+        navigate('/sleep-records')
       }
     })
-  }, [id, fetchAll, records])
+  }, [id, getById, navigate])
 
   const handleUpdate = async (values: SleepRecordFormValues) => {
     await updateRecord(+id!, values)
