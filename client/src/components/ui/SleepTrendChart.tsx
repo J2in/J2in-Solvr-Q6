@@ -8,13 +8,13 @@ import {
   Tooltip
 } from 'recharts'
 
-interface TrendRecord {
-  date: string
-  totalMinutes: number
+interface StatRecord {
+  period: string
+  count: number
 }
 
 interface Props {
-  data: TrendRecord[]
+  data: StatRecord[]
 }
 
 export default function SleepTrendByMonth({ data }: Props) {

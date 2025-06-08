@@ -1,12 +1,12 @@
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts'
 
-interface AvgRecord {
-  weekday: number // 0=일,1=월,...,6=토
-  avgMinutes: number
+interface StatRecord {
+  period: string
+  count: number
 }
 
 interface Props {
-  data: AvgRecord[]
+  data: StatRecord[]
 }
 
 const WEEKDAYS_KR = ['일', '월', '화', '수', '목', '금', '토']
