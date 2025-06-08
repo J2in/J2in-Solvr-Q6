@@ -22,35 +22,32 @@ export const sleep_records = sqliteTable('sleep_records', {
   userId: integer('user_id')
     .notNull()
     .references(() => users.id),
-  startTime: text('start_time')
-    .notNull(),
-  endTime: text('end_time')
-    .notNull(),
-  durationMinutes: integer('duration_minutes')
-    .notNull(),
-  quality: integer('quality')
-    .notNull()
-    .default(3), // 수면 품질 점수 (1-5)
+  startTime: text('start_time').notNull(),
+  endTime: text('end_time').notNull(),
+  durationMinutes: integer('duration_minutes').notNull(),
+  quality: integer('quality').notNull().default(3), // 수면 품질 점수 (1-5)
   notes: text('notes'),
   createdAt: text('created_at')
     .notNull()
     .$defaultFn(() => new Date().toISOString()),
   updatedAt: text('updated_at')
     .notNull()
-    .$defaultFn(() => new Date().toISOString()),
+    .$defaultFn(() => new Date().toISOString())
 })
 
 // 세션 테이블 스키마
 export const sessions = sqliteTable('sessions', {
-  id: text('id').primaryKey(), // UUID 등을 사용
+  id: integer('id').primaryKey({ autoIncrement: true }),
   userId: integer('user_id')
     .notNull()
     .references(() => users.id),
+  token: text('token') // 세션 식별 토큰
+    .notNull()
+    .unique(),
   createdAt: text('created_at')
     .notNull()
     .$defaultFn(() => new Date().toISOString()),
-  expiresAt: text('expires_at')
-    .notNull(),
+  expiresAt: text('expires_at').notNull()
 })
 
 // 사용자 타입 정의
