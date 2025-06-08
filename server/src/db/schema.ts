@@ -56,6 +56,7 @@ export const sessions = sqliteTable('sessions', {
 // 사용자 타입 정의
 export type SleepRecord = typeof sleep_records.$inferSelect
 export type NewSleepRecord = typeof sleep_records.$inferInsert
+export type UpdateSleepRecord = Partial<Omit<NewSleepRecord, 'id' | 'createdAt' | 'updatedAt'>>
 
 export type Session = typeof sessions.$inferSelect
 export type NewSession = typeof sessions.$inferInsert

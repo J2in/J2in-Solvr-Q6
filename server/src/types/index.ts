@@ -1,9 +1,27 @@
-import { User, NewUser, UpdateUser } from '../db/schema'
+import {
+  User,
+  NewUser,
+  UpdateUser,
+  SleepRecord,
+  NewSleepRecord,
+  Session,
+  NewSession,
+  UpdateSleepRecord
+} from '../db/schema'
 
 // 사용자 관련 타입
-export { User, NewUser, UpdateUser }
+export {
+  User,
+  NewUser,
+  UpdateUser,
+  SleepRecord,
+  NewSleepRecord,
+  UpdateSleepRecord,
+  Session,
+  NewSession
+}
 
-// API 응답 타입
+// API 응답 공통 타입
 export interface ApiResponse<T = any> {
   success: boolean
   data?: T
@@ -38,4 +56,16 @@ export interface UpdateUserDto {
   name?: string
   email?: string
   role?: UserRole
+}
+
+// 수면 기록 생성 DTO
+export interface CreateSleepRecordDto
+  extends Omit<NewSleepRecord, 'id' | 'createdAt' | 'updatedAt'> {}
+
+// 수면 기록 수정 DTO
+export interface UpdateSleepRecordDto extends UpdateSleepRecord {}
+
+// 세션 생성 DTO
+export interface CreateSessionDto extends Omit<NewSession, 'id' | 'createdAt'> {
+  expiresAt: string
 }
