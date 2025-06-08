@@ -49,7 +49,7 @@ export const useSleepRecords = (userId?: number) => {
   }, [])
 
   const deleteRecord = useCallback(async (id: number) => {
-    await axios.delete<ApiResponse<null>>(`/api/sleep-records/${id}`)
+    await axios.delete(`/api/sleep-records/${id}`)
     setData(prev => prev.filter(r => r.id !== id))
   }, [])
 
