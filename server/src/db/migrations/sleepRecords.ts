@@ -1,9 +1,8 @@
 import { Database } from 'better-sqlite3'
 
 export async function upSleepRecords(sqlite: Database) {
-	sqlite.exec(`
+  sqlite.exec(`
 
-	DROP TABLE sleep_records;
     CREATE TABLE IF NOT EXISTS sleep_records (
       id               INTEGER PRIMARY KEY AUTOINCREMENT,
       user_id          INTEGER NOT NULL,

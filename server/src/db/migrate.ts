@@ -10,6 +10,8 @@ import { upUsers } from './migrations/users'
 import { upSleepRecords } from './migrations/sleepRecords'
 import { upSessions } from './migrations/sessions'
 
+import { seedDummyData } from './dummyData'
+
 // 데이터베이스 디렉토리 생성 함수
 async function ensureDatabaseDirectory() {
   const dir = dirname(env.DATABASE_URL)
@@ -22,57 +24,6 @@ async function ensureDatabaseDirectory() {
     }
   }
 }
-
-// 초기 사용자 데이터
-const initialUsers = [
-  {
-    name: '관리자',
-    email: 'admin@example.com',
-    role: UserRole.ADMIN,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    name: '일반 사용자',
-    email: 'user@example.com',
-    role: UserRole.USER,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  },
-  {
-    name: '게스트',
-    email: 'guest@example.com',
-    role: UserRole.GUEST,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  }
-]
-
-// 초기 수면 기록 더미 데이터
-const initialSleepRecords = [
-  {
-    userId: 2, // 예시: '일반 사용자'의 ID
-    startTime: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
-    endTime: new Date().toISOString(),
-    durationMinutes: 8 * 60,
-    quality: 4,
-    notes: '좋은 숙면이었어요',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    userId: 2,
-    startTime: new Date(Date.now() - 6.5 * 60 * 60 * 1000).toISOString(),
-    endTime: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
-    durationMinutes: 5.5 * 60,
-    quality: 3,
-    notes: '중간에 깨서 조금 아쉬워요',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-]
-
-
 // 데이터베이스 마이그레이션 및 초기 데이터 삽입
 async function runMigration() {
   try {
@@ -90,32 +41,18 @@ async function runMigration() {
     upSleepRecords(sqlite)
     upSessions(sqlite)
 
+    // 기존 데이터 삭제
+    //    foreign key 제약이 걸려 있으면 순서 지켜서 삭제하세요.
+    sqlite.exec(`
+    DELETE FROM sleep_records;
+    DELETE FROM sessions;
+    DELETE FROM users;
+  `)
+
     // 초기 데이터 삽입
     console.log('초기 데이터 삽입 중...')
 
-    // 기존 데이터 확인
-    const existingUsers = db.select().from(users)
-
-    if ((await existingUsers).length === 0) {
-      // 초기 사용자 데이터 삽입
-      for (const user of initialUsers) {
-        await db.insert(users).values(user)
-      }
-      console.log(`${initialUsers.length}명의 사용자가 추가되었습니다.`)
-    } else {
-      console.log('사용자 데이터가 이미 존재합니다. 초기 데이터 삽입을 건너뜁니다.')
-    }
-
-    // 수면 기록 초기 데이터 삽입
-    const existingRecords = await db.select().from(sleep_records)
-    if (existingRecords.length === 0) {
-      for (const rec of initialSleepRecords) {
-        await db.insert(sleep_records).values(rec)
-      }
-      console.log(`수면 기록 ${initialSleepRecords.length}건이 추가되었습니다.`)
-    } else {
-      console.log('수면 기록 데이터가 이미 존재합니다.')
-    }
+    await seedDummyData(sqlite)
 
     console.log('데이터베이스 마이그레이션이 완료되었습니다.')
   } catch (error) {
