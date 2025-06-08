@@ -18,6 +18,16 @@ const api = axios.create({
   }
 })
 
+// 요청 전에 localStorage의 토큰을 헤더에 담아 보내기
+api.interceptors.request.use(config => {
+  const token = localStorage.getItem('token')
+
+  if (token && config.headers) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
+})
+
 export const userService = {
   getAll: async (): Promise<User[]> => {
     const response = await api.get<ApiResponse<User[]>>('/users')
@@ -51,6 +61,16 @@ export const userService = {
   delete: async (id: number): Promise<void> => {
     await api.delete(`/users/${id}`)
   }
+}
+
+export interface LoginResponse {
+  token: string
+}
+
+export const loginApi = (email: string) => api.post<LoginResponse>('/session/login', { email })
+
+export const logoutApi = () => {
+  localStorage.removeItem('token')
 }
 
 export const healthService = {
