@@ -1,10 +1,15 @@
 import Fastify from 'fastify'
+import fp from 'fastify-plugin'
+import authenticate from './plugins/authenticate'
 import cors from '@fastify/cors'
 import env from './config/env'
 import { initializeDatabase, getDb } from './db'
 import runMigration from './db/migrate'
 import { createUserService } from './services/userService'
 import { createSleepRecordService } from './services/sleepRecordService'
+import { createSessionService } from './services/sessionService'
+import { createStatisticsService } from './services/statisticsService'
+
 import { createRoutes } from './routes'
 import { AppContext } from './types/context'
 
@@ -40,8 +45,16 @@ async function start() {
     const db = await getDb()
     const context: AppContext = {
       userService: createUserService({ db }),
-      sleepRecordService: createSleepRecordService({ db })
+      sleepRecordService: createSleepRecordService({ db }),
+      sessionService: createSessionService({ db }),
+      statisticsService: createStatisticsService({ db })
     }
+
+    // Fastify 인스턴스에 decorate
+    fastify.decorate('di', context)
+
+    // auth 플러그인은 decorate 이후에 등록
+    await fastify.register(fp(authenticate))
 
     // 라우트 등록
     await fastify.register(createRoutes(context))
