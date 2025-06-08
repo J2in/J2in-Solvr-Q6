@@ -3,6 +3,7 @@ import { createContext, useContext, useState, useEffect } from 'react'
 import api from '../services/api'
 
 interface AuthContextValue {
+  userId: number | null
   userEmail: string | null
   logout: () => void
   refreshUser: () => Promise<void>
@@ -12,10 +13,12 @@ const AuthContext = createContext<AuthContextValue | null>(null)
 
 export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
   const [userEmail, setUserEmail] = useState<string | null>(null)
+  const [userId, setUserId] = useState<number | null>(null)
 
   const fetchMe = async () => {
     try {
-      const res = await api.get('/session/me')
+      const res = await api.get<{ data: { id: number; email: string } }>('/session/me')
+      setUserId(res.data.data.id)
       setUserEmail(res.data.data.email)
     } catch {
       setUserEmail(null)
@@ -33,7 +36,7 @@ export const AuthProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }
   }
 
   return (
-    <AuthContext.Provider value={{ userEmail, logout, refreshUser: fetchMe }}>
+    <AuthContext.Provider value={{ userId, userEmail, logout, refreshUser: fetchMe }}>
       {children}
     </AuthContext.Provider>
   )
