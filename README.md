@@ -51,6 +51,46 @@ React 기반의 클라이언트와 Fastify+SQLite 기반의 서버로 구성되�
 
 ---
 
+## Changelog
+
+### [1.1.0]
+
+#### Added
+
+- 🔍 **수면 통계 인사이트 기능**
+  - **최근 30일 수면 시간 추이** 차트 (라인)
+    - 엔드포인트: `GET /api/statistics/sleep-trend?days=30`
+    - 클라이언트에서 분 단위를 “Xh Ym” 포맷으로 변환
+  - **요일별 평균 수면 시간** 차트 (막대)
+    - 엔드포인트: `GET /api/statistics/weekday-average`
+    - 클라이언트에서 분 단위를 “Xh Ym” 포맷으로 변환
+- 🛠 **백엔드**
+  - `statisticsService.getSleepTrend(userId, days)` 구현
+  - `statisticsService.getWeekdayAverage(userId)` 구현
+  - 인증 미들웨어(`fastify.authenticate`) 적용된 `statisticsController` & `statisticsRoutes` 추가
+- 🛠 **프론트엔드**
+  - `useStatistics` 훅 추가 (API 호출 & 상태 관리)
+  - `SleepTrendByMonth`, `WeekdayAverageChart` 컴포넌트 구현
+  - `StatisticsPage` 라우팅 및 레이아웃 업데이트
+- 🔐 **인증(Session) 기능**
+  - `POST   /api/session/login` : 이메일 로그인 → 토큰 발행
+  - `DELETE /api/session/logout` : 로그아웃(토큰 만료)
+  - `GET    /api/session/me` : 내 정보 조회
+  - Fastify 플러그인 `authenticate` 미들웨어 적용
+
+### [1.0.0]
+
+#### Added
+
+- 🎉 **기본 수면 기록 CRUD 기능**
+  - `POST /api/sleep-records` : 기록 생성
+  - `GET  /api/sleep-records` : 전체 기록 조회
+  - `GET  /api/sleep-records/:id` : 단일 기록 조회
+  - `PUT  /api/sleep-records/:id` : 기록 수정
+  - `DELETE /api/sleep-records/:id` : 기록 삭제
+
+---
+
 ## 기술 스택
 
 ### 공통
