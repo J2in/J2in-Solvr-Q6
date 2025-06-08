@@ -4,6 +4,7 @@ import { createUserRoutes } from './userRoutes'
 import { createSleepRecordRoutes } from './sleepRecordRoutes'
 import { createSessionRoutes } from './sessionRoutes'
 import { createStatisticsRoutes } from './statisticsRouters'
+import { createAiRoutes } from './aiRoutes'
 import healthRoutes from './healthRoutes'
 
 // 모든 라우트 등록
@@ -18,7 +19,10 @@ export const createRoutes = (context: AppContext) => async (fastify: FastifyInst
   fastify.register(createUserRoutes(context), { prefix: '/api/users' })
 
   // 통계 관련 라우트
-  fastify.register(createStatisticsRoutes(context), { prefix: '/api/statistics/' })
+  fastify.register(createStatisticsRoutes(context), { prefix: '/api/statistics' })
+
+  // AI 조언 관련 라우트
+  await fastify.register(createAiRoutes(context), { prefix: '/api/ai' })
 
   // 수면 데이터 관련 라우트
   fastify.register(createSleepRecordRoutes(context), { prefix: '/api/sleep-records' })

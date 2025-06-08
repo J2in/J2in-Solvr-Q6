@@ -9,6 +9,7 @@ import { createUserService } from './services/userService'
 import { createSleepRecordService } from './services/sleepRecordService'
 import { createSessionService } from './services/sessionService'
 import { createStatisticsService } from './services/statisticsService'
+import { AiService } from './services/aiService'
 
 import { createRoutes } from './routes'
 import { AppContext } from './types/context'
@@ -43,11 +44,13 @@ async function start() {
 
     // 서비스 및 컨텍스트 초기화
     const db = await getDb()
+    const statisticsService = createStatisticsService({ db })
     const context: AppContext = {
       userService: createUserService({ db }),
       sleepRecordService: createSleepRecordService({ db }),
       sessionService: createSessionService({ db }),
-      statisticsService: createStatisticsService({ db })
+      statisticsService: statisticsService,
+      aiService: new AiService(statisticsService)
     }
 
     // Fastify 인스턴스에 decorate
