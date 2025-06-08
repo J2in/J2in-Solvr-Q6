@@ -3,7 +3,7 @@ import Database from 'better-sqlite3'
 import { mkdir } from 'fs/promises'
 import { dirname } from 'path'
 import env from '../config/env'
-import { users } from './schema'
+import { users, sleep_records } from './schema'
 import { UserRole } from '../types'
 
 import { upUsers } from './migrations/users'
@@ -48,6 +48,31 @@ const initialUsers = [
   }
 ]
 
+// 초기 수면 기록 더미 데이터
+const initialSleepRecords = [
+  {
+    userId: 2, // 예시: '일반 사용자'의 ID
+    startTime: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
+    endTime: new Date().toISOString(),
+    durationMinutes: 8 * 60,
+    quality: 4,
+    notes: '좋은 숙면이었어요',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    userId: 2,
+    startTime: new Date(Date.now() - 6.5 * 60 * 60 * 1000).toISOString(),
+    endTime: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
+    durationMinutes: 5.5 * 60,
+    quality: 3,
+    notes: '중간에 깨서 조금 아쉬워요',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+]
+
+
 // 데이터베이스 마이그레이션 및 초기 데이터 삽입
 async function runMigration() {
   try {
@@ -61,9 +86,9 @@ async function runMigration() {
     // 스키마 생성
     console.log('데이터베이스 스키마 생성 중...')
 
-    upUsers(sqlite);
-    upSleepRecords(sqlite);
-    upSessions(sqlite);
+    upUsers(sqlite)
+    upSleepRecords(sqlite)
+    upSessions(sqlite)
 
     // 초기 데이터 삽입
     console.log('초기 데이터 삽입 중...')
@@ -79,6 +104,17 @@ async function runMigration() {
       console.log(`${initialUsers.length}명의 사용자가 추가되었습니다.`)
     } else {
       console.log('사용자 데이터가 이미 존재합니다. 초기 데이터 삽입을 건너뜁니다.')
+    }
+
+    // 수면 기록 초기 데이터 삽입
+    const existingRecords = await db.select().from(sleep_records)
+    if (existingRecords.length === 0) {
+      for (const rec of initialSleepRecords) {
+        await db.insert(sleep_records).values(rec)
+      }
+      console.log(`수면 기록 ${initialSleepRecords.length}건이 추가되었습니다.`)
+    } else {
+      console.log('수면 기록 데이터가 이미 존재합니다.')
     }
 
     console.log('데이터베이스 마이그레이션이 완료되었습니다.')
