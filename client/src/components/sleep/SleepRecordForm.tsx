@@ -1,3 +1,4 @@
+// src/components/sleep/SleepRecordForm.tsx
 import React, { useState, useEffect } from 'react'
 import { SleepRecord } from '../../hooks/useSleepRecords'
 import Button from '../ui/Button'
@@ -10,7 +11,6 @@ interface Props {
 }
 
 export default function SleepRecordForm({ initialValues, onSubmit }: Props) {
-  // 기본값: 현재 시각 (YYYY-MM-DDThh:mm)
   const nowIso = new Date().toISOString().slice(0, 16)
   const [form, setForm] = useState<SleepRecordFormValues>({
     startTime: initialValues?.startTime ?? nowIso,
@@ -22,21 +22,16 @@ export default function SleepRecordForm({ initialValues, onSubmit }: Props) {
   const [error, setError] = useState<string | null>(null)
   const [timeError, setTimeError] = useState<string | null>(null)
 
-  // 시작<->종료 시간 검증
+  // 시작/종료 시간 검증
   useEffect(() => {
-    if (form.endTime < form.startTime) {
-      setTimeError('종료 시간이 시작 시간보다 이전일 수 없습니다.')
-    } else {
-      setTimeError(null)
-    }
+    setTimeError(
+      form.endTime < form.startTime ? '종료 시간이 시작 시간보다 이전일 수 없습니다.' : null
+    )
   }, [form.startTime, form.endTime])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
-    setForm(f => ({
-      ...f,
-      [name]: name === 'quality' ? +value : value
-    }))
+    setForm(f => ({ ...f, [name]: name === 'quality' ? +value : value }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -53,36 +48,37 @@ export default function SleepRecordForm({ initialValues, onSubmit }: Props) {
   }
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 12, maxWidth: 400 }}>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {timeError && <p style={{ color: 'red' }}>{timeError}</p>}
+    <form onSubmit={handleSubmit} className="space-y-4">
+      {(error || timeError) && <p className="text-sm text-red-600">{error || timeError}</p>}
 
-      <label>
-        수면 시작
+      <div>
+        <label className="block text-sm font-medium text-gray-700">수면 시작</label>
         <input
           type="datetime-local"
           name="startTime"
           value={form.startTime}
           onChange={handleChange}
-          max={form.endTime} // 시작은 종료 이전까지만 선택 가능
+          max={form.endTime}
           required
+          className="mt-1 block w-full border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
         />
-      </label>
+      </div>
 
-      <label>
-        수면 종료
+      <div>
+        <label className="block text-sm font-medium text-gray-700">수면 종료</label>
         <input
           type="datetime-local"
           name="endTime"
           value={form.endTime}
           onChange={handleChange}
-          min={form.startTime} // 종료는 시작 이후부터 선택 가능
+          min={form.startTime}
           required
+          className="mt-1 block w-full border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
         />
-      </label>
+      </div>
 
-      <label>
-        품질 (1–5)
+      <div>
+        <label className="block text-sm font-medium text-gray-700">품질 (1–5)</label>
         <input
           type="number"
           name="quality"
@@ -91,17 +87,26 @@ export default function SleepRecordForm({ initialValues, onSubmit }: Props) {
           value={form.quality}
           onChange={handleChange}
           required
+          className="mt-1 block w-24 border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
         />
-      </label>
+      </div>
 
-      <label>
-        메모
-        <textarea name="notes" value={form.notes} onChange={handleChange} rows={3} />
-      </label>
+      <div>
+        <label className="block text-sm font-medium text-gray-700">메모</label>
+        <textarea
+          name="notes"
+          rows={3}
+          value={form.notes}
+          onChange={handleChange}
+          className="mt-1 block w-full border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+        />
+      </div>
 
-      <Button type="submit" disabled={submitting || !!timeError}>
-        {submitting ? '저장 중…' : '저장'}
-      </Button>
+      <div className="text-right">
+        <Button type="submit" disabled={submitting || !!timeError}>
+          {submitting ? '저장 중…' : '저장'}
+        </Button>
+      </div>
     </form>
   )
 }

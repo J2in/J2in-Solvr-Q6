@@ -3,63 +3,46 @@ import { Outlet, Link } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 
 const MainLayout: React.FC = () => {
-  const { userEmail } = useAuth() // 로그인 상태 확인
+  const { userEmail, logout } = useAuth()
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex justify-between items-center">
-            <Link to="/" className="text-xl font-bold text-primary-600">
-              풀스택 보일러플레이트
-            </Link>
-            <nav className="flex space-x-4 items-center">
-              <Link
-                to="/"
-                className="text-neutral-600 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium"
-              >
-                홈
-              </Link>
-
-              {userEmail ? (
-                <>
-                  {/* 로그인 상태: 이메일/이름 표시 + 로그아웃 */}
-                  <span className="text-neutral-800 px-3 py-2 rounded-md text-sm font-medium">
-                    {userEmail}
-                  </span>
-                  <Link
-                    to="/logout"
-                    className="text-red-600 hover:text-red-800 px-3 py-2 rounded-md text-sm font-medium"
-                  >
-                    로그아웃
-                  </Link>
-                </>
-              ) : (
-                /* 비로그인 상태: 로그인 버튼만 */
-                <Link
-                  to="/login"
-                  className="text-neutral-600 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium"
+      <header className="bg-blue-600 text-white">
+        <div className="max-w-4xl mx-auto px-6 py-4 flex justify-between items-center">
+          <Link to="/" className="text-2xl font-bold">
+            수면 관리 앱
+          </Link>
+          <nav className="flex space-x-4 items-center">
+            {userEmail ? (
+              <>
+                <span className="px-3 py-1 bg-blue-500 rounded text-sm">{userEmail}</span>
+                <button
+                  onClick={logout}
+                  className="px-3 py-1 bg-white text-blue-600 rounded text-sm hover:bg-gray-100"
                 >
-                  로그인
-                </Link>
-              )}
-            </nav>
-          </div>
+                  로그아웃
+                </button>
+              </>
+            ) : (
+              <Link
+                to="/login"
+                className="px-3 py-1 bg-white text-blue-600 rounded text-sm hover:bg-gray-100"
+              >
+                로그인
+              </Link>
+            )}
+          </nav>
         </div>
       </header>
 
-      <main className="flex-grow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="flex-grow bg-gray-50">
+        <div className="max-w-4xl mx-auto px-6 py-8">
           <Outlet />
         </div>
       </main>
 
-      <footer className="bg-white border-t border-neutral-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <p className="text-center text-neutral-500 text-sm">
-            &copy; {new Date().getFullYear()} 풀스택 보일러플레이트. All rights reserved.
-          </p>
-        </div>
+      <footer className="bg-white border-t text-center py-4 text-gray-500 text-xs">
+        &copy; {new Date().getFullYear()} 수면 관리 앱
       </footer>
     </div>
   )

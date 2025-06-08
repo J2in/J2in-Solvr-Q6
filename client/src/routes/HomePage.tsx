@@ -1,52 +1,52 @@
 import { Link } from 'react-router-dom'
+import { useAuth } from '../hooks/useAuth'
 
 const HomePage = () => {
+  const { userEmail } = useAuth()
+
   return (
-    <div className="text-center">
-      <h1 className="text-4xl font-bold text-neutral-900 mb-6">풀스택 보일러플레이트</h1>
-      <p className="text-xl text-neutral-600 mb-8">
-        React, Vite, TailwindCSS, Fastify, SQLite를 활용한 풀스택 웹 애플리케이션
-        보일러플레이트입니다.
+    <div className="min-h-screen flex flex-col items-center justify-center bg-white p-4">
+      <h1 className="text-4xl font-extrabold text-blue-600 mb-2">수면 관리 앱</h1>
+      <p className="text-base text-gray-700 mb-6 text-center max-w-md">
+        나만의 수면을 간편하게 기록하고, 지난 내역을 확인해보세요. AI 인사이트로 꿀잠 꿀팁도 받아볼
+        수 있어요.
       </p>
-      <div className="flex justify-center space-x-4">
-        <Link to="/users" className="btn btn-primary">
-          유저 관리 시작하기
-        </Link>
 
-        <Link to="/sleep-records" className="btn btn-primary">
-          수면 관리 시작하기
-        </Link>
-
-        <a
-          href="https://github.com/yourusername/fullstack-boilerplate"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn btn-secondary"
-        >
-          GitHub 저장소
-        </a>
+      <div className="flex flex-col space-y-3 w-full max-w-xs">
+        {userEmail ? (
+          <>
+            <Link
+              to="/sleep-records"
+              className="w-full text-center py-3 bg-blue-500 text-white rounded-lg shadow"
+            >
+              기록 확인하기
+            </Link>
+            <Link
+              to="/sleep-records/new"
+              className="w-full text-center py-3 bg-green-500 text-white rounded-lg shadow"
+            >
+              새 기록 추가하기
+            </Link>
+            <Link
+              to="/statistics"
+              className="w-full text-center py-3 bg-indigo-500 text-white rounded-lg shadow"
+            >
+              통계 인사이트 보기
+            </Link>
+          </>
+        ) : (
+          <Link
+            to="/login"
+            className="w-full text-center py-4 bg-blue-500 text-white rounded-lg shadow-md"
+          >
+            로그인하고 시작하기
+          </Link>
+        )}
       </div>
 
-      <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="card">
-          <h2 className="text-xl font-semibold mb-4">React + Vite</h2>
-          <p className="text-neutral-600">
-            빠른 개발 경험을 제공하는 React와 Vite를 사용하여 모던 UI를 구축합니다.
-          </p>
-        </div>
-        <div className="card">
-          <h2 className="text-xl font-semibold mb-4">TailwindCSS</h2>
-          <p className="text-neutral-600">
-            유틸리티 우선 CSS 프레임워크로 빠르고 유연한 디자인을 구현합니다.
-          </p>
-        </div>
-        <div className="card">
-          <h2 className="text-xl font-semibold mb-4">Fastify + SQLite</h2>
-          <p className="text-neutral-600">
-            빠른 백엔드 API와 간편한 데이터베이스 관리를 제공합니다.
-          </p>
-        </div>
-      </div>
+      <footer className="mt-8 text-gray-500 text-xs">
+        &copy; {new Date().getFullYear()} 수면 관리 앱
+      </footer>
     </div>
   )
 }

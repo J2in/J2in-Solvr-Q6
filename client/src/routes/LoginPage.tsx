@@ -29,7 +29,6 @@ export default function LoginPage() {
       const res = await api.post<ApiResponse<{ token: string }>>('/session/login', { email })
       const token = res.data.data.token
       localStorage.setItem('token', token)
-      console.log('TOKEN ==>' + token)
       await refreshUser()
       navigate('/') // 로그인 후 홈으로
     } catch (err: any) {
