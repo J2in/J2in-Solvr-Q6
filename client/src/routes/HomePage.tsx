@@ -12,6 +12,11 @@ const HomePage = () => {
         <Link to="/users" className="btn btn-primary">
           유저 관리 시작하기
         </Link>
+
+        <Link to="/sleep-records" className="btn btn-primary">
+          수면 관리 시작하기
+        </Link>
+
         <a
           href="https://github.com/yourusername/fullstack-boilerplate"
           target="_blank"

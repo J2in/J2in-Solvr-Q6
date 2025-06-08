@@ -7,11 +7,18 @@ import CreateUserPage from './routes/CreateUserPage'
 import EditUserPage from './routes/EditUserPage'
 import NotFoundPage from './routes/NotFoundPage'
 
+import SleepRecordsPage from './routes/SleepRecordsPage'
+import CreateSleepRecordPage from './routes/CreateSleepRecordPage'
+import EditSleepRecordPage from './routes/EditSleepRecordPage'
+
 function App() {
   return (
     <Routes>
       <Route path="/" element={<MainLayout />}>
         <Route index element={<HomePage />} />
+        <Route path="sleep-records" element={<SleepRecordsPage />} />
+        <Route path="sleep-records/new" element={<CreateSleepRecordPage />} />
+        <Route path="sleep-records/:id/edit" element={<EditSleepRecordPage />} />
         <Route path="users">
           <Route index element={<UsersPage />} />
           <Route path="new" element={<CreateUserPage />} />
