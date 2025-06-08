@@ -53,6 +53,34 @@ React 기반의 클라이언트와 Fastify+SQLite 기반의 서버로 구성되�
 
 ## Changelog
 
+### [1.2.0]
+
+#### Added
+
+- 🤖 **AI 수면 패턴 조언 기능**
+  - **AI 기반 수면 패턴 요약**
+    - 엔드포인트: `GET /api/ai/advice?periodDays={days}`
+    - 내 최근 `{days}`일 수면 기록 기반으로
+      - 평균·최단·최장 수면시간 계산
+      - 한 문장 요약 리포트 생성
+    - 클라이언트에서 호출: `useAiAdvice(periodDays)` 훅
+
+#### Changed
+
+- 🎨 **홈페이지 UI 개편**
+  - “수면 관리” 앱 컨셉에 맞춰 텍스트·버튼·레이아웃 단순화
+
+#### Fixed
+
+- 🔒 **인증 흐름 개선**
+  - 로그인·로그아웃 직후 상단바 즉시 갱신되도록 `useAuth` 훅 개선
+- 🛠 **불필요한 `ApiResponse` 중복 정의 제거**
+- 🔁 **수면 기록 수정 API 최적화**
+  - 수정 요청 시 불필요한 추가 조회 호출을 제거해, API 요청 횟수를 1회로 줄임
+- ✅ **사용자 ID 기반 개인 기록 조회/추가 지원**
+  - `useSleepRecords(userId)` 훅과 `/api/sleep-records/user/:userId` 엔드포인트로
+    - 자기 자신의 수면 기록만 조회 및 생성 가능하도록 개선
+
 ### [1.1.0]
 
 #### Added
