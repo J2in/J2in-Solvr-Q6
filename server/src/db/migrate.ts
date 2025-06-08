@@ -6,6 +6,10 @@ import env from '../config/env'
 import { users } from './schema'
 import { UserRole } from '../types'
 
+import { upUsers } from './migrations/users'
+import { upSleepRecords } from './migrations/sleepRecords'
+import { upSessions } from './migrations/sessions'
+
 // 데이터베이스 디렉토리 생성 함수
 async function ensureDatabaseDirectory() {
   const dir = dirname(env.DATABASE_URL)
@@ -57,17 +61,9 @@ async function runMigration() {
     // 스키마 생성
     console.log('데이터베이스 스키마 생성 중...')
 
-    // users 테이블 생성
-    sqlite.exec(`
-      CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        email TEXT NOT NULL UNIQUE,
-        role TEXT NOT NULL DEFAULT 'USER',
-        created_at TEXT NOT NULL,
-        updated_at TEXT NOT NULL
-      )
-    `)
+    upUsers(sqlite);
+    upSleepRecords(sqlite);
+    upSessions(sqlite);
 
     // 초기 데이터 삽입
     console.log('초기 데이터 삽입 중...')

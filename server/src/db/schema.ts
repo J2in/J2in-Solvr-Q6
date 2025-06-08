@@ -16,7 +16,50 @@ export const users = sqliteTable('users', {
     .$defaultFn(() => new Date().toISOString())
 })
 
+// 수면 기록 테이블 스키마
+export const sleep_records = sqliteTable('sleep_records', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  userId: integer('user_id')
+    .notNull()
+    .references(() => users.id),
+  startTime: text('start_time')
+    .notNull(),
+  endTime: text('end_time')
+    .notNull(),
+  durationMinutes: integer('duration_minutes')
+    .notNull(),
+  quality: integer('quality')
+    .notNull()
+    .default(3), // 수면 품질 점수 (1-5)
+  notes: text('notes'),
+  createdAt: text('created_at')
+    .notNull()
+    .$defaultFn(() => new Date().toISOString()),
+  updatedAt: text('updated_at')
+    .notNull()
+    .$defaultFn(() => new Date().toISOString()),
+})
+
+// 세션 테이블 스키마
+export const sessions = sqliteTable('sessions', {
+  id: text('id').primaryKey(), // UUID 등을 사용
+  userId: integer('user_id')
+    .notNull()
+    .references(() => users.id),
+  createdAt: text('created_at')
+    .notNull()
+    .$defaultFn(() => new Date().toISOString()),
+  expiresAt: text('expires_at')
+    .notNull(),
+})
+
 // 사용자 타입 정의
+export type SleepRecord = typeof sleep_records.$inferSelect
+export type NewSleepRecord = typeof sleep_records.$inferInsert
+
+export type Session = typeof sessions.$inferSelect
+export type NewSession = typeof sessions.$inferInsert
+
 export type User = typeof users.$inferSelect
 export type NewUser = typeof users.$inferInsert
 export type UpdateUser = Partial<Omit<NewUser, 'id' | 'createdAt'>>
