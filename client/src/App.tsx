@@ -10,6 +10,9 @@ import NotFoundPage from './routes/NotFoundPage'
 import SleepRecordsPage from './routes/SleepRecordsPage'
 import CreateSleepRecordPage from './routes/CreateSleepRecordPage'
 import EditSleepRecordPage from './routes/EditSleepRecordPage'
+import StatisticsPage from './routes/StatisticsPage'
+import LoginPage from './routes/LoginPage'
+import LogoutPage from './routes/LogoutPage'
 
 function App() {
   return (
@@ -19,6 +22,9 @@ function App() {
         <Route path="sleep-records" element={<SleepRecordsPage />} />
         <Route path="sleep-records/new" element={<CreateSleepRecordPage />} />
         <Route path="sleep-records/:id/edit" element={<EditSleepRecordPage />} />
+        <Route path="login" element={<LoginPage />} />
+        <Route path="logout" element={<LogoutPage />} />
+        <Route path="statistics" element={<StatisticsPage />} />
         <Route path="users">
           <Route index element={<UsersPage />} />
           <Route path="new" element={<CreateUserPage />} />
