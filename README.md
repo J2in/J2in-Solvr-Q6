@@ -1,8 +1,55 @@
-# 풀스택 서비스 보일러 플레이트
+# Deep Sleep
 
-## 프로젝트 개요
+‘Deep Sleep'은 매일 나의 수면 시간을 기록하고, 조회·수정·삭제할 수 있는 간단한 풀스택 모바일 서비스입니다.
+React 기반의 클라이언트와 Fastify+SQLite 기반의 서버로 구성되어 있으며, 누구나 빠르게 자신의 수면 패턴을 관리할 수 있어요.
 
-이 보일러 플레이트는 풀스택 웹 애플리케이션 개발을 위한 기본 구조를 제공합니다. monorepo 구조로 클라이언트와 서버를 효율적으로 관리하며, 현대적인 웹 개발 기술 스택을 활용합니다.
+---
+
+## 주요 기능
+
+- **수면 기록 생성**
+
+  - 수면 시작 시간 & 종료 시간 입력
+  - 자동으로 소요 시간(`durationMinutes`) 계산
+  - 수면 품질(1–5) 및 메모 필드
+
+- **기록 조회**
+
+  - 전체 기록 조회 (관리자용)
+  - 사용자별 기록 리스트
+  - 개별 기록 상세 보기
+
+- **기록 수정 & 삭제**
+  - 입력 오류 수정: 시작/종료 시간 간 유효성 검증
+  - 기록 삭제 시 확인 모달
+
+---
+
+## 폴더 구조
+
+```
+/server
+├─ src/
+│  ├─ config/        환경 변수 로딩
+│  ├─ db/            Drizzle ORM 스키마·마이그레이션
+│  ├─ migrations/    테이블 생성 스크립트
+│  ├─ services/      비즈니스 로직 (SleepRecordService)
+│  ├─ controllers/   요청 핸들러
+│  ├─ routes/        Fastify 플러그인
+│  └─ index.ts       서버 시작점
+
+/client
+├─ src/
+│  ├─ hooks/         useSleepRecords 커스텀 훅
+│  ├─ services/      API 호출 로직
+│  ├─ components/    SleepRecordList, SleepRecordForm, Button 등
+│  ├─ routes/        페이지 컴포넌트 (리스트·생성·수정)
+│  ├─ layouts/       MainLayout
+│  └─ App.tsx        라우팅 설정
+
+```
+
+---
 
 ## 기술 스택
 
@@ -77,9 +124,20 @@ pnpm build
 
 서버는 다음과 같은 기본 API 엔드포인트를 제공합니다:
 
+• 유저 관련
+
 - `GET /api/health`: 서버 상태 확인
 - `GET /api/users`: 유저 목록 조회
 - `GET /api/users/:id`: 특정 유저 조회
 - `POST /api/users`: 새 유저 추가
 - `PUT /api/users/:id`: 유저 정보 수정
 - `DELETE /api/users/:id`: 유저 삭제
+
+• 수면 기록 관련
+
+- `GET /api/sleep-records` : 전체 수면 기록 조회 (관리자용)
+- `GET /api/sleep-records/:id` : 단일 수면 기록 조회
+- `GET /api/sleep-records/user/:userId` : 특정 사용자 수면 기록 조회
+- `POST /api/sleep-records` : 수면 기록 생성
+- `PUT /api/sleep-records/:id` : 수면 기록 수정
+- `DELETE /api/sleep-records/:id` : 수면 기록 삭제
